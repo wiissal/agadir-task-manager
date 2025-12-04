@@ -40,4 +40,10 @@ module.exports = (Sequelize, DataTypes) => {
     timetamps: true,
     underscored: true
   });
+  //password hashing
+User.beforeCreate(async(user)=>{
+  if(user.password){
+    user.password= await bcrypt.hash(user.password, 10);
+  }
+});
 };
