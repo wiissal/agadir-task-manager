@@ -46,4 +46,10 @@ User.beforeCreate(async(user)=>{
     user.password= await bcrypt.hash(user.password, 10);
   }
 });
+//re-hashing if password changes
+User.beforeUpdate(async(user)=>{
+  if(user.password){
+    user.password= await bcrypt.hash(user.password, 10);
+  }
+});
 };
