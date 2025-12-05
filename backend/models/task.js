@@ -57,6 +57,13 @@ updatedAt:{
   },{
     timestamps: true,
     underscored: true
-})
-
+});
+//associations task belong to user
+Task.associate =(models)=>{
+  Task.belongTo(models.user,{
+    foreignKey: 'user_id',
+    onDelete:'CASCADE'
+  })
+  };
+return Task;
 }
