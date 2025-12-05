@@ -33,3 +33,8 @@ Object.keys(db).forEach((modelName)=>{
     db[modelName].associate(db);
   }
 });
+
+db.sequelize = sequelize; // add sequelize instance to db
+db.Sequelize = Sequelize; // add sequelize to db
+
+module.exports = db;
