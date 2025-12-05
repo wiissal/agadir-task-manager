@@ -27,3 +27,9 @@ return(
   db[model.name] = model;
 });
 const basename = path.basename(__filename); // store ref for easy access
+//relationships
+Object.keys(db).forEach((modelName)=>{
+  if(db[modelName].associate){
+    db[modelName].associate(db);
+  }
+});
