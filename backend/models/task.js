@@ -13,19 +13,50 @@ references:{
   key : 'id'  // rerf to id column
 },
 onDelete:'CASCADE' // IF the user is deleted delete their tasks too
-}
-
-
-
-
-
-
-
-
-  })
-
-
-
-
+},
+title:{
+  type:DataTypes.STRING,
+  allowNull: false,
+  validate:{
+len:[2, 200],
+notEmpty: true
+  }
+},
+description:{
+  type:DataTypes.TEXT,
+  allowNull: false,
+  validate:{
+    len:[0,1000]
+  }
+},
+status:{
+  type: DataTypes.ENUM('pending', 'done'),
+  defaultValue: 'pending',
+  allowNull: false
+},
+due_date:{
+  type: DataTypes.DATE,
+  allowNull: true,
+  validate:{
+    //day must be in the future
+    isAfterToday(Value){
+      if(Value && new Date(value) < new Date()){
+        throw new Error('Because the date must be in the future');
+      }
+    }
+  }
+},
+createdAt:{
+  type: DataTypes.DATE,
+  defaultValue: DataTypes.NOW
+},
+updatedAt:{
+  type: DataTypes.DATE,
+  defaultValue: DataTypes.NOW    //track the modifications
+},
+  },{
+    timestamps: true,
+    underscored: true
+})
 
 }
