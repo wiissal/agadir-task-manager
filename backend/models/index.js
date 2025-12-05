@@ -13,3 +13,17 @@ if(config.use_env_variable){
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);//if we use config,json 
 }
+//read all file 
+fs.readdirSync(__dirname) 
+.filter((file)=>{ 
+return(
+  file.indexOf('.')!== 0 &&  //ignore hidden files
+  file !== basename && // index
+  file.slice(-3) === '.js'
+);
+})
+.forEach((file)=>{
+  const model = sequelize.import(path.join(__dirname, file)); //import mpdel and right after add them to DB
+  db[model.name] = model;
+});
+const basename = path.basename(__filename); // store ref for easy access
