@@ -1,60 +1,60 @@
-const bcrypt = require("bcryptjs");
-const { Sequelize, DataTypes } = require("sequelize");
-const { underscoredIf } = require("sequelize/lib/utils");
-//define the user model
-module.exports = (Sequelize, DataTypes) => {
-  const User = Sequelize.define("User", {
+
+const bcrypt = require('bcryptjs');
+
+module.exports = (sequelize, DataTypes) => {
+  
+  // Define User model
+  const User = sequelize.define('User', {
     id: {
-      type: DataTypes.INTIGER,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [2, 100],
-        notEmpty: true,
-      },
+        len: [2, 100],        
+        notEmpty: true       
+      }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true
-      }
+      unique: true,         
+        isEmail: true         
     },
-    password:{
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate:{
-        len : [6, 255],
+      validate: {
+        len: [6, 255]         
       }
-    },
-    createdAt:{
-      type: DataTypes.DATE, //TRACK ACCOUNT CREATIion auto generate with sequelize
-      defaultValue: DataTypes.NOW
     }
-  },{
-    timetamps: true,
-    underscored: true
+    
+  }, {
+    // Model options
+    sequelize,                // Pass sequelize instance
+    modelName: 'User',        // Model name
+    tableName: 'users',       // Database table name
+    timestamps: true,         // Add createdAt, updatedAt
+    underscored: true         // Use snake_case: created_at
   });
-  //password hashing
-User.beforeCreate(async(user)=>{
-  if(user.password){
-    user.password= await bcrypt.hash(user.password, 10);
-  }
-});
-//re-hashing if password changes
-User.beforeUpdate(async(user)=>{
-  if(user.password){
-    user.password= await bcrypt.hash(user.password, 10);
-  }
-});
-//password validation (compare)
-User.prototype.validatePassword = async function(password){
-  return await bcrypt.compare(password, this.password);
-};
-return User;
+  User.beforeCreate(async (user) => {
+    if (user.password) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+  });
+  User.beforeUpdate(async (user) => {
+    if (user.changed('password')) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+  });
+
+  // METHOD Check password during login
+  User.prototype.validatePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+  };
+
+  return User;
 };

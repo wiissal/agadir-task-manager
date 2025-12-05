@@ -1,40 +1,80 @@
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
 
-const env = process.env.NODE_ENV || 'development'; // see what env  if its dev or test or prod otherwise will choose dev by default 
-const config = require(path.join(__dirname, '..','config','config.json'))[env]; 
-const db={}; //it gonna hold all models
+const fs = require("fs");
+const path = require("path");
+const Sequelize = require("sequelize");
 
-//sequelize instance
+// Get environment 
+const env = process.env.NODE_ENV || "development";
+
+// Read database config
+const config = require(path.join(__dirname, "..", "config", "config.json"))[
+  env
+];
+
+// Create databasethat  hold all models
+const db = {};
+
+//Sequelize Connection
 let sequelize;
-if(config.use_env_variable){
-  sequelize = new Sequelize(process.env[config.use_env_variable], config); // if werw using db url env variable
+
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config); // If using DATABASE_URL env variable
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);//if we use config,json 
+  // If using config.json credentials (local development)
+  sequelize = new Sequelize(
+    config.database, 
+    config.username, 
+    config.password,
+    config 
+  );
 }
-//read all file 
-fs.readdirSync(__dirname) 
-.filter((file)=>{ 
-return(
-  file.indexOf('.')!== 0 &&  //ignore hidden files
-  file !== basename && // index
-  file.slice(-3) === '.js'
-);
-})
-.forEach((file)=>{
-  const model = sequelize.import(path.join(__dirname, file)); //import mpdel and right after add them to DB
-  db[model.name] = model;
-});
-const basename = path.basename(__filename); // store ref for easy access
-//relationships
-Object.keys(db).forEach((modelName)=>{
-  if(db[modelName].associate){
-    db[modelName].associate(db);
+
+//  Load All Models from Files
+
+const basename = path.basename(__filename); // Gets 'index.js'
+
+// Read all files in this directory
+fs.readdirSync(__dirname)
+  .filter((file) => {
+    // Keep only .js files
+    return (
+      file.indexOf(".") !== 0 && 
+      file !== basename && 
+      file.slice(-3) === ".js" 
+    );
+  })
+  .forEach((file) => {
+    // Load user.js, task.js and call them using sequelize 
+    const model = require(path.join(__dirname, file))(
+      sequelize,
+      Sequelize.DataTypes
+    );
+
+    //store model in data base
+    db[model.name] = model;
+  });
+
+
+//realationships between models
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db); // Pass all models
   }
 });
 
-db.sequelize = sequelize; // add sequelize instance to db
-db.Sequelize = Sequelize; // add sequelize to db
+
+// Test Database Connection
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((err) => {
+    console.error("Unable to connect to database:", err);
+  });
+//export all models 
+// gonna import it in other file like const { User, Task, sequelize } = require('./models');
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 module.exports = db;

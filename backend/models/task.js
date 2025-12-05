@@ -1,69 +1,62 @@
-module.exports=(sequelize, DataTypes)=>{
-  const Task = sequelize.define('Task',{
-id: {
-  type: DataTypes.INTIGER,
-  primaryKey: true, //unique identifier for each task
-  autoIncrement: true
-},
-user_id:{
-type: DataTypes.INTIGER,
-allowNull: false,
-references:{
-  model: 'User', //ref to user table
-  key : 'id'  // rerf to id column
-},
-onDelete:'CASCADE' // IF the user is deleted delete their tasks too
-},
-title:{
-  type:DataTypes.STRING,
-  allowNull: false,
-  validate:{
-len:[2, 200],
-notEmpty: true
-  }
-},
-description:{
-  type:DataTypes.TEXT,
-  allowNull: false,
-  validate:{
-    len:[0,1000]
-  }
-},
-status:{
-  type: DataTypes.ENUM('pending', 'done'),
-  defaultValue: 'pending',
-  allowNull: false
-},
-due_date:{
-  type: DataTypes.DATE,
-  allowNull: true,
-  validate:{
-    //day must be in the future
-    isAfterToday(Value){
-      if(Value && new Date(value) < new Date()){
-        throw new Error('Because the date must be in the future');
+
+module.exports = (sequelize, DataTypes) => {
+  
+  // Define Task model
+  const Task = sequelize.define('Task', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',       // References users table
+        key: 'id'             // References users.id
       }
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2, 200],        
+        notEmpty: true        
+      }
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,      
+      validate: {
+        len: [0, 1000]        
+      }
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'done'),  
+      defaultValue: 'pending',                   
+      allowNull: false
+    },
+    due_date: {
+      type: DataTypes.DATE,
+      allowNull: true        
     }
-  }
-},
-createdAt:{
-  type: DataTypes.DATE,
-  defaultValue: DataTypes.NOW
-},
-updatedAt:{
-  type: DataTypes.DATE,
-  defaultValue: DataTypes.NOW    //track the modifications
-},
-  },{
-    timestamps: true,
-    underscored: true
-});
-//associations task belong to user
-Task.associate =(models)=>{
-  Task.belongTo(models.user,{
-    foreignKey: 'user_id',
-    onDelete:'CASCADE'
-  })
+    
+  }, {
+    // Model options 
+    sequelize,                // Pass sequelize instance
+    modelName: 'Task',        // Model name
+    tableName: 'tasks',       // Database table name
+    timestamps: true,         // Add createdAt, updatedAt
+    underscored: true         // Use snake_case: created_at
+  });
+
+  // Defines relationship: One User has Many Tasks
+  Task.associate = (models) => {
+    Task.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE'     // Delete task if user is deleted
+    });
   };
-return Task;
-}
+
+  return Task;
+};
