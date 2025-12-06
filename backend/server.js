@@ -25,4 +25,4 @@ db.sequelize.sync().then(()=>{
 }).catch((err)=>{
   console.log('Data base sync error:' , err);
 });
-module.exports = app;
+module.exports = app ;
