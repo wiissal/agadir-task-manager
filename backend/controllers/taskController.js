@@ -1,4 +1,6 @@
-const { task, user } = require("../models");
+const db = require('../models');
+const Task = db.Task;
+const User = db.User;
 
 exports.getTasks = async (req, res) => {
   try {
