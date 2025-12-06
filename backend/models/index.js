@@ -11,7 +11,7 @@ const config = require(path.join(__dirname, "..", "config", "config.json"))[
   env
 ];
 
-// Create databasethat  hold all models
+// Create database that holds all models
 const db = {};
 
 //Sequelize Connection
@@ -65,7 +65,7 @@ Object.keys(db).forEach((modelName) => {
 
 // Test Database Connection
 sequelize
-  .authenticate()
+  .authenticate() //to make sure credentials and server are ok
   .then(() => {
     console.log("Database connection successful");
   })
