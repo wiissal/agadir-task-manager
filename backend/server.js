@@ -10,7 +10,7 @@ app.use(express.json()); //access to data and let express read json req coming
 
 //auth/task routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/tasks', require('./routes/task'));
+app.use('/api/tasks', require('./routes/tasks'));
 
 app.use((err, req, res, next) => {
 console.error(err.stack);
