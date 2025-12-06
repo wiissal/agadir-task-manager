@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require("../models");
 const Task = db.Task;
 const User = db.User;
 
@@ -49,98 +49,96 @@ exports.createTask = async (req, res) => {
     });
   }
 };
-exports.undateTask = async (req,res)=>{
-  try{
+exports.undateTask = async (req, res) => {
+  try {
     const taskId = req.params.id;
-    const userId =req.user.id;
-    const task= await task.FindByPk(taskId);
-//check if task exist
-    if(!task){
+    const userId = req.user.id;
+    const task = await task.FindByPk(taskId);
+    //check if task exist
+    if (!task) {
       return res.status(404).json({
-        message: 'task not found'
+        message: "task not found",
       });
     }
     //check if the user own this task
-    if(task.user_id !==  userId){
+    if (task.user_id !== userId) {
       return res.status(403).json({
-        message: 'Not authorized to update this task'
+        message: "Not authorized to update this task",
       });
     }
-    // update task 
-    const {title , description , due_date, status} = req.body;
+    // update task
+    const { title, description, due_date, status } = req.body;
     await task.update({
       title: title || task.title,
-      description : description || task.description,
+      description: description || task.description,
       due_date: due_date || task.due_date,
-      status: status || task.status
-
+      status: status || task.status,
     });
     res.status(200).json({
-      message: 'Task updated succesfully',
-      task
+      message: "Task updated succesfully",
+      task,
     });
-  }catch (error){
-    console.error('update task error', error);
+  } catch (error) {
+    console.error("update task error", error);
     res.status(500).json({
-      message: 'failed to update task',
-      error: error.message
+      message: "failed to update task",
+      error: error.message,
     });
   }
 };
-exports.deleteTask = async (req,res)=>{
-  try{
-const taskId = req.param.id;
-const userId = req.used.id;
-const task = await task.findByPk(taskId);
-if (!task){
-  return res.status(404).json({
-    message:'Task not found'
-  });
-}
-if(task.user_id !== userId){
-  return res.status(403).json({
-    message : 'not authorozed to delete this task'
-  });
-}
-await task.destroy();
-res.status(200).json({
-  message:'task deleted successfuly'
-})
-  }catch (error) {
-    console.error ('delete task error' , error)
-    res.status(500).json({
-      message: 'failed to delete this task',
-      error: error.message
-    });
-  }
-}
-//mark it as done 
-exports.taskMarked = async (req,res)=>{
-  try{
+exports.deleteTask = async (req, res) => {
+  try {
     const taskId = req.param.id;
     const userId = req.user.id;
     const task = await task.findByPk(taskId);
-    if(!task){
+    if (!task) {
       return res.status(404).json({
-        message : 'task not found'
+        message: "Task not found",
       });
     }
-    if(task.user_id !== userId){
+    if (task.user_id !== userId) {
       return res.status(403).json({
-        message : 'not authorized'
+        message: "not authorozed to delete this task",
       });
     }
-    await task.update({status: 'done'});
+    await task.destroy();
     res.status(200).json({
-      message: 'task marked as done',
-      task
+      message: "task deleted successfuly",
     });
-
-  }catch (error){
-    console.error('task not marker error:',error);
+  } catch (error) {
+    console.error("delete task error", error);
     res.status(500).json({
-      message: 'failed to mark task done',
-      error : error.message
+      message: "failed to delete this task",
+      error: error.message,
+    });
+  }
+};
+//mark it as done
+exports.taskMarked = async (req, res) => {
+  try {
+    const taskId = req.param.id;
+    const userId = req.user.id;
+    const task = await task.findByPk(taskId);
+    if (!task) {
+      return res.status(404).json({
+        message: "task not found",
+      });
+    }
+    if (task.user_id !== userId) {
+      return res.status(403).json({
+        message: "not authorized",
+      });
+    }
+    await task.update({ status: "done" });
+    res.status(200).json({
+      message: "task marked as done",
+      task,
+    });
+  } catch (error) {
+    console.error("task not marker error:", error);
+    res.status(500).json({
+      message: "failed to mark task done",
+      error: error.message,
     });
   }
 };
