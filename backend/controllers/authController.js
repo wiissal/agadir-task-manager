@@ -1,6 +1,6 @@
-const bcrypt = required('bcryptjs');
-const jwt = required('jsonwebtoken');
-const {user} = required ('../models');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const {user} = require ('../models');
 exports.register = async (req, res)=>{
   try{
     const{name, email, password}= req.body;
@@ -42,6 +42,49 @@ exports.register = async (req, res)=>{
     res.status(500).json({
       message: 'registration field',
       error: error.message
+    });
+  }
+};
+exports.login = async (req, res)=>{
+  try{
+    const {email,password} =req.body;
+    if (!email || !password){
+      return res.status(400).json({
+        message: 'Please provide email and password'
+      });
+    }
+    const user = await user.findOne({where: {email}});
+    if(!user){
+      return res.status(404).json({
+        message: 'user not found'
+      });
+    }
+    const isPasswordValid = await  user.validatePassword(password);
+    if(!isPasswordValid){
+      return res.status(401).json({
+        message:' invalid password'
+      });
+    }
+    const token = jwt.sign(
+      {id:user.id, email:user.email},
+      process.env.JWT_SECRET,
+      {expiresIn:'7d'}
+    );
+    res.status(201).json({
+      message: ' login successfully',
+      user :{
+        id: user.id,
+        name: user.name,
+        email: user.email
+      },
+      token
+    });
+
+  }catch (error){
+    console.error('login error:' , error);
+    res.status(500).json({
+      message: ' login faiuled',
+      error : error.message
     });
   }
 };
