@@ -4,8 +4,8 @@ const User = db.User;
 
 exports.getTasks = async (req, res) => {
   try {
-    const userId = req.used.id;
-    const tasks = await task.findAll({
+    const userId = req.user.id;
+    const tasks = await Task.findAll({
       where: { user_id: userId },
       order: [["createdAt", "DESC"]],
     });
@@ -30,7 +30,7 @@ exports.createTask = async (req, res) => {
         message: "title is required",
       });
     }
-    const newTask = await task.create({
+    const newTask = await Task.create({
       user_id: userId,
       title,
       description,
@@ -49,11 +49,11 @@ exports.createTask = async (req, res) => {
     });
   }
 };
-exports.undateTask = async (req, res) => {
+exports.updateTask = async (req, res) => {
   try {
     const taskId = req.params.id;
     const userId = req.user.id;
-    const task = await task.FindByPk(taskId);
+    const task = await Task.findByPk(taskId);
     //check if task exist
     if (!task) {
       return res.status(404).json({
@@ -88,9 +88,9 @@ exports.undateTask = async (req, res) => {
 };
 exports.deleteTask = async (req, res) => {
   try {
-    const taskId = req.param.id;
+    const taskId = req.params.id;
     const userId = req.user.id;
-    const task = await task.findByPk(taskId);
+    const task = await Task.findByPk(taskId);
     if (!task) {
       return res.status(404).json({
         message: "Task not found",
@@ -114,11 +114,11 @@ exports.deleteTask = async (req, res) => {
   }
 };
 //mark it as done
-exports.taskMarked = async (req, res) => {
+exports.markTaskDone = async (req, res) => {
   try {
-    const taskId = req.param.id;
+    const taskId = req.params.id;
     const userId = req.user.id;
-    const task = await task.findByPk(taskId);
+    const task = await Task.findByPk(taskId);
     if (!task) {
       return res.status(404).json({
         message: "task not found",
