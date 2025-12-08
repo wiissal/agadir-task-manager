@@ -10,7 +10,7 @@ import AddTaskScreen from 'screens/AddTaskScreen';
 import TaskHistoryScreen from 'screens/TaskHistoryScreen';
 
 const stack = createStackNavigator();
-export const AppNavigator = ({isLoggedIn}) =>{
+export const AppNavigator = ({isLoggedIn , isSplashLoading}) =>{
   return ( 
 <NavigationContainer>
       <Stack.Navigator
