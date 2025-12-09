@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Log in to Crush</Text>
-        <Text style={styles.subtitle}>Enter your credentials</Text>
+        <Text style={styles.subtitle}>Enter your informations</Text>
 
         <TextInput
           style={styles.input}
@@ -86,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     padding: 20,
   },
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.white,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   forgotPassword: {
-    color: COLORS.secondary,
+    color: COLORS.white,
     textAlign: 'right',
     marginBottom: 30,
     fontSize: 14,
   },
   loginButton: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.success,
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',

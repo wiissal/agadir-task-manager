@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import SplashScreen from '../screens/SplashScreen';
+import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import TaskListScreen from '../screens/TaskListScreen';
@@ -11,7 +11,7 @@ import TaskHistoryScreen from '../screens/TaskHistoryScreen';
 
 const Stack = createStackNavigator();
 
-export const AppNavigator = ({ isLoggedIn, isSplashLoading }) => {
+export const AppNavigator = ({ isLoggedIn }) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -19,10 +19,9 @@ export const AppNavigator = ({ isLoggedIn, isSplashLoading }) => {
           headerShown: false,
         }}
       >
-        {isSplashLoading ? (
-          <Stack.Screen name="Splash" component={SplashScreen} />
-        ) : !isLoggedIn ? (
+        {!isLoggedIn ? (
           <>
+            <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
