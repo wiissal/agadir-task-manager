@@ -34,13 +34,7 @@ const RegisterScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-      // TODO: API call to backend
-      // const response = await fetch('http://localhost:5000/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ name, email, password }),
-      // });
-
+     
       Alert.alert('Success', 'Account created! Please log in');
       navigation.navigate('Login');
     } catch (error) {
