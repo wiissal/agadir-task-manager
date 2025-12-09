@@ -1,42 +1,79 @@
-'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const fs = require("fs");
+const path = require("path");
+const Sequelize = require("sequelize");
+
+// Get environment 
+const env = process.env.NODE_ENV || "development";
+
+// Read database config
+const config = require(path.join(__dirname, "..", "config", "config.json"))[
+  env
+];
+
+// Create database that holds all models
 const db = {};
 
+//Sequelize Connection
 let sequelize;
+
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], config); // If using DATABASE_URL env variable
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  // If using config.json credentials (local development)
+  sequelize = new Sequelize(
+    config.database, 
+    config.username, 
+    config.password,
+    config 
+  );
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
+//  Load All Models from Files
+
+const basename = path.basename(__filename); // Gets 'index.js'
+
+// Read all files in this directory
+fs.readdirSync(__dirname)
+  .filter((file) => {
+    // Keep only .js files
     return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
+      file.indexOf(".") !== 0 && 
+      file !== basename && 
+      file.slice(-3) === ".js" 
     );
   })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+  .forEach((file) => {
+    // Load user.js, task.js and call them using sequelize 
+    const model = require(path.join(__dirname, file))(
+      sequelize,
+      Sequelize.DataTypes
+    );
+
+    //store model in data base
     db[model.name] = model;
   });
 
-Object.keys(db).forEach(modelName => {
+
+//realationships between models
+Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
-    db[modelName].associate(db);
+    db[modelName].associate(db); // Pass all models
   }
 });
 
+
+// Test Database Connection
+sequelize
+  .authenticate() //to make sure credentials and server are ok
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((err) => {
+    console.error("Unable to connect to database:", err);
+  });
+//export all models 
+// gonna import it in other file like const { User, Task, sequelize } = require('./models');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
