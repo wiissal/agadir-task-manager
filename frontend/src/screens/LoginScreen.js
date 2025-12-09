@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,13 @@ import {
   Alert,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -23,10 +25,7 @@ const LoginScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'TaskList' }],
-      });
+      login();
     } catch (error) {
       Alert.alert('Error', 'Login failed');
     } finally {
@@ -38,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Log in to Crush</Text>
-        <Text style={styles.subtitle}>Enter your informations</Text>
+        <Text style={styles.subtitle}>Enter your credentials</Text>
 
         <TextInput
           style={styles.input}
@@ -86,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
     justifyContent: 'center',
     padding: 20,
   },
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.white,
+    color: COLORS.primary,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -112,16 +111,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 20,
     fontSize: 14,
-    color: COLORS.white,
+    color: COLORS.black,
   },
   forgotPassword: {
-    color: COLORS.white,
+    color: COLORS.secondary,
     textAlign: 'right',
     marginBottom: 30,
     fontSize: 14,
   },
   loginButton: {
-    backgroundColor: COLORS.success,
+    backgroundColor: COLORS.accent,
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',

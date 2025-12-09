@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { AuthProvider } from './src/context/AuthContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
-    <AppNavigator isLoggedIn={isLoggedIn} />
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
   );
 }
