@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { COLORS } from '../constants/colors';
 import { AuthContext } from '../context/AuthContext';
+import { loginAPI } from '../utils/api';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,20 +19,24 @@ const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
+  if (!email || !password) {
+    Alert.alert('Error', 'Please fill in all fields');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      login();
-    } catch (error) {
-      Alert.alert('Error', 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    // CALL BACKEND API
+    const response = await loginAPI(email, password);
+    login(response.token, response.user);
+    
+    Alert.alert('Success', 'Logged in!');
+  } catch (error) {
+    Alert.alert('Error', error.message || 'Login failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -85,7 +90,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     padding: 20,
   },
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.success,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 20,
     fontSize: 14,
-    color: COLORS.black,
+    color: COLORS.white,
   },
   forgotPassword: {
     color: COLORS.secondary,
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginButton: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.success,
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',

@@ -9,9 +9,10 @@ import {
   Alert,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
+import { getTasksAPI } from '../utils/api';
 
 const TaskListScreen = ({ navigation }) => {
-  // STATE - Store tasks
+  const { userToken } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -21,48 +22,22 @@ const TaskListScreen = ({ navigation }) => {
   }, []);
 
   // FETCH TASKS FROM BACKEND
-  const fetchTasks = async () => {
-    setLoading(true);
-    try {
-      // TODO: Replace with real API call
-      // const response = await fetch('http://localhost:5000/api/tasks', {
-      //   headers: { Authorization: `Bearer ${token}` },
-      // });
-      // const data = await response.json();
-      // setTasks(data.tasks);
+ const fetchTasks = async () => {
+  if (!userToken) return;
+  
+  setLoading(true);
+  try {
+    // CALL BACKEND API
+    const tasksData = await getTasksAPI(userToken);
+    setTasks(tasksData);
+  } catch (error) {
+    Alert.alert('Error', error.message || 'Failed to load tasks');
+  } finally {
+    setLoading(false);
+  }
+};
 
-      // DUMMY DATA for testing
-      setTasks([
-        {
-          id: 1,
-          title: 'Study JavaScript',
-          description: 'Learn closures and promises',
-          dueDate: '2025-12-15',
-          status: 'pending',
-        },
-        {
-          id: 2,
-          title: 'Complete React project',
-          description: 'Build task management app',
-          dueDate: '2025-12-10',
-          status: 'pending',
-        },
-        {
-          id: 3,
-          title: 'Review code',
-          description: 'Check pull requests',
-          dueDate: '2025-12-08',
-          status: 'done',
-        },
-      ]);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to load tasks');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // RENDER each task item
+  // Render each task item
   const renderTaskItem = ({ item }) => (
     <TouchableOpacity
       style={[
@@ -70,7 +45,7 @@ const TaskListScreen = ({ navigation }) => {
         item.status === 'done' && styles.completedTask,
       ]}
       onPress={() => {
-        // TODO: Navigate to task detail or edit screen
+        
         Alert.alert('Task', item.title);
       }}
     >
@@ -96,7 +71,7 @@ const TaskListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HEADER */}
+      
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Crush</Text>
         <TouchableOpacity
@@ -107,7 +82,7 @@ const TaskListScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* TASK LIST */}
+     
       {tasks.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No tasks yet</Text>
@@ -126,7 +101,7 @@ const TaskListScreen = ({ navigation }) => {
         />
       )}
 
-      {/* BOTTOM NAVIGATION */}
+      
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <Text style={styles.navText}>Tasks</Text>
