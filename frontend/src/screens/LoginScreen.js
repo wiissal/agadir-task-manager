@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 20,
     fontSize: 14,
-    color: COLORS.black,
+    color: COLORS.white,
   },
   forgotPassword: {
     color: COLORS.white,
