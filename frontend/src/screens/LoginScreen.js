@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
 
@@ -14,14 +14,16 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const handleLogin = async ()=>{
-     if (!email || !password) {
+
+  const handleLogin = async () => {
+    if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
-  }
+    }
+
     setLoading(true);
     try {
-       navigation.reset({
+      navigation.reset({
         index: 0,
         routes: [{ name: 'TaskList' }],
       });
@@ -31,11 +33,12 @@ const LoginScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-  return(
-      <ScrollView contentContainerStyle={styles.container}>
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Log in to Crush</Text>
-        <Text style={styles.subtitle}>Create your account</Text>
+        <Text style={styles.subtitle}>Enter your credentials</Text>
 
         <TextInput
           style={styles.input}
@@ -146,4 +149,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-  
