@@ -13,6 +13,7 @@ import { AuthContext } from '../context/AuthContext';
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
+  
   const { isLoggedIn } = useContext(AuthContext);
 
   return (

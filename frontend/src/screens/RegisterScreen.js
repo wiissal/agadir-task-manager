@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
+import { registerAPI } from '../utils/api';
 
 const RegisterScreen = ({ navigation }) => {
   // STATE - Store form data
@@ -34,7 +35,7 @@ const RegisterScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-     
+      const res = await registerAPI(name, email, password);
       Alert.alert('Success', 'Account created! Please log in');
       navigation.navigate('Login');
     } catch (error) {

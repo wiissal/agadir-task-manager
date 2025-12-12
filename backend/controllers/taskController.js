@@ -1,7 +1,7 @@
 const db = require("../models");
 
-const Task = db.task;
-const User = db.user;
+const Task = db.Task;
+const User = db.User;
 
 // GET ALL TASKS
 exports.getTasks = async (req, res) => {

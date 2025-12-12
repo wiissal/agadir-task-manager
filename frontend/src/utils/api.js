@@ -1,15 +1,15 @@
-import axios from 'axios';
+import axios from "axios";
 
 // CREATE AXIOS INSTANCE
 const api = axios.create({
-baseURL: 'http://192.168.0.228:5000/api', 
+  baseURL: "http://192.168.1.167:5000/api",
   timeout: 10000,
 });
 
 // LOGIN
 export const loginAPI = async (email, password) => {
   try {
-    const response = await api.post('/auth/login', {
+    const response = await api.post("/auth/login", {
       email,
       password,
     });
@@ -22,7 +22,7 @@ export const loginAPI = async (email, password) => {
 // REGISTER
 export const registerAPI = async (name, email, password) => {
   try {
-    const response = await api.post('/auth/register', {
+    const response = await api.post("/auth/register", {
       name,
       email,
       password,
@@ -36,7 +36,7 @@ export const registerAPI = async (name, email, password) => {
 // GET TASKS
 export const getTasksAPI = async (token) => {
   try {
-    const response = await api.get('/tasks', {
+    const response = await api.get("/tasks", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,7 +51,7 @@ export const getTasksAPI = async (token) => {
 export const createTaskAPI = async (token, title, description, due_date) => {
   try {
     const response = await api.post(
-      '/tasks',
+      "/tasks",
       { title, description, due_date },
       {
         headers: {
